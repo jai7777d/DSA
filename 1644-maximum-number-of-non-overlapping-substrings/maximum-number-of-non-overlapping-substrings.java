@@ -1,28 +1,24 @@
 class Solution {
     public List<String> maxNumOfSubstrings(String s) {
 
-        int n = s.length();
-
         int[] first = new int[26];
         int[] last = new int[26];
 
-        // first ko -1 se initialize
         Arrays.fill(first, -1);
 
         // first and last occurrence
-        for (int i = 0; i < n; i++) {
-            int ch = s.charAt(i) - 'a';
+        for (int i = 0; i < s.length(); i++) {
+            int x = s.charAt(i) - 'a';
 
-            if (first[ch] == -1) {
-                first[ch] = i;
-            }
+            if (first[x] == -1)
+                first[x] = i;
 
-            last[ch] = i;
+            last[x] = i;
         }
 
-        List<int[]> intervals = new ArrayList<>();
+        List<int[]> list = new ArrayList<>();
 
-        // Har character ka valid interval
+        // Find valid intervals
         for (int c = 0; c < 26; c++) {
 
             if (first[c] == -1)
@@ -31,42 +27,36 @@ class Solution {
             int l = first[c];
             int r = last[c];
 
-            boolean valid = true;
+            boolean ok = true;
 
             for (int i = l; i <= r; i++) {
 
-                int ch = s.charAt(i) - 'a';
+                int x = s.charAt(i) - 'a';
 
-                // Is character ki occurrence l se pehle hai
-                if (first[ch] < l) {
-                    valid = false;
+                if (first[x] < l) {
+                    ok = false;
                     break;
                 }
 
-                // Is character ki last occurrence bhi include karni hogi
-                r = Math.max(r, last[ch]);
+                r = Math.max(r, last[x]);
             }
 
-            if (valid) {
-                intervals.add(new int[]{l, r});
-            }
+            if (ok)
+                list.add(new int[]{l, r});
         }
 
-        // Right endpoint ke according sort
-        intervals.sort((a, b) -> a[1] - b[1]);
+        // Greedy: smallest ending interval first
+        list.sort((a, b) -> a[1] - b[1]);
 
         List<String> ans = new ArrayList<>();
 
-        int prevEnd = -1;
+        int end = -1;
 
-        for (int[] interval : intervals) {
+        for (int[] p : list) {
 
-            int l = interval[0];
-            int r = interval[1];
-
-            if (l > prevEnd) {
-                ans.add(s.substring(l, r + 1));
-                prevEnd = r;
+            if (p[0] > end) {
+                ans.add(s.substring(p[0], p[1] + 1));
+                end = p[1];
             }
         }
 
