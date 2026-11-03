@@ -1,20 +1,14 @@
 class Solution {
 public int minMoves(int[] nums) {
+int max = Arrays.stream(nums).max().getAsInt();
 
+        int ans = 0;
 
-    int max = nums[0];
+        for (int num : nums) {
+            ans += Math.abs(max - num);
+        }
 
-    for (int num : nums) {
-        max = Math.max(max, num);
-    }
-
-    int ans = 0;
-
-    for (int num : nums) {
-        ans += max - num;
-    }
-
-    return ans;
+        return ans;
 }
 
 
